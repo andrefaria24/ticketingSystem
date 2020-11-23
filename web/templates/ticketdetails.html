@@ -1,0 +1,40 @@
+{%extends "layout.html"%}
+{%block content%}
+    <h4>{{ ticket[1] }}</h4>
+    <form id="ticketdetails" method="POST" >
+        <div class="form-group">
+            <label for="id">Ticket Number</label>
+        <input type="text" class="form-control" name="id" value={{ ticket[0] }} readonly><br>
+        <label for="severity">Severity</label>
+        <select class="form-control" name="severity">
+            {% for option in severityoptions %}
+            <option value="{{ option[0] }}" {% if option[0] == ticket[8] %} selected {% endif %}>{{ option[0] }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="type">Type</label>
+        <select class="form-control" name="type">
+            {% for option in typeoptions %}
+            <option value="{{ option[0] }}" {% if option[0] == ticket[9] %} selected {% endif %}>{{ option[0] }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="createdby">Created By</label>
+        <input type="text" class="form-control" name="createdby" value={{ ticket[4] }} readonly><br>
+        <label for="createdon">Created On</label>
+        <input type="text" class="form-control" name="createdon" value={{ ticket[2] }} readonly><br>
+        <label for="lastupdatedby">Last Updated By</label>
+        <input type="text" class="form-control" name="lastupdatedby" value={{ ticket[5] }} readonly><br>
+        <label for="lastupdatedon">Last Updated On</label>
+        <input type="text" class="form-control" name="lastupdatedon" value={{ ticket[3] }} readonly><br>
+        <label for="status">Status</label>
+        <select name="status" class="form-control">
+            {% for option in statusoptions %}
+            <option value="{{ option[0] }}" {% if option[0] == ticket[6] %} selected {% endif %}>{{ option[0] }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="description">Description</label>
+        <textarea name="description" class="form-control" rows="10" cols="55" readonly>{{ ticket[7] }}</textarea><br>
+        <input type="submit" class="btn btn-primary mb-2" name="submit" value="Submit">
+        </div>
+    </form>
+    </p>
+{%endblock%}

@@ -1,0 +1,22 @@
+{%extends "layout.html"%}
+{%block content%}
+    {% if session['loggedin'] != True %}
+        <div class = "container">
+            <div class="row">
+                <div class="col-md-offset-5 col-md-3">
+                    <div class="form-login">
+                        <h4>Login</h4>
+                        <form method="POST">
+                            <input type="text" name="username" class="form-control input-sm chat-input" placeholder="Username" required><br>
+                            <input type="password" name="password" class="form-control input-sm chat-input" placeholder="Password" required><br>
+                            <input type="submit" name="login" class="btn btn-primary btn-md" value="Login">
+                        </form>
+                        <div class="msg">{{ msg }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        This is the main Page
+    {% endif %}
+{%endblock%}
