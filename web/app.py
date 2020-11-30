@@ -96,14 +96,31 @@ def tickets():
 def ticketdetails(id):
     if session:
         cursor = sqlconn.cursor()
-        ticketinfo = cursor.execute('getTicketInfo @ticketId = ?', id).fetchone()
+        ticketinfo = cursor.execute('exec getTicketInfo @ticketId = ?', id).fetchone()
         statusoptions = cursor.execute('SELECT name FROM [status]').fetchall()
         severityoptions = cursor.execute('SELECT name FROM [severity]').fetchall()
         typeoptions = cursor.execute('SELECT name FROM [type]').fetchall()
     else:
         return render_template('error.html')
 
-    
+    if request.method == 'POST':
+        change = False
+        if request.form['severity'] != ticketinfo[8]:
+            change = True
+            cursor.execute('exec updateTicketSeverity @ticketId = ?, @severityName = ?', request.form['id'], request.form['severity'])
+        if request.form['type'] != ticketinfo[9]:
+            change = True
+            cursor.execute('exec updateTicketType @ticketId = ?, @typeName = ?', request.form['id'], request.form['type'])
+        if request.form['status'] != ticketinfo[6]:
+            change = True
+            cursor.execute('exec updateTicketStatus @ticketId = ?, @statusName = ?', request.form['id'], request.form['status'])
+        if request.form['description'] != ticketinfo[7]:
+            change = True
+            cursor.execute('UPDATE [tickets] SET description = ? WHERE id = ?', request.form['description'], request.form['id'])
+        if change == True:
+            cursor.execute('exec updateTicketBy @ticketId = ?, @userName = ?', request.form['id'], session['username'])
+    sqlconn.commit()
+    ticketinfo = cursor.execute('exec getTicketInfo @ticketId = ?', id).fetchone()
 
     return render_template('ticketdetails.html', ticket=ticketinfo, statusoptions=statusoptions, severityoptions=severityoptions, typeoptions=typeoptions)
 
@@ -138,6 +155,23 @@ def settings():
         userinfo = cursor.fetchone()
 
     return render_template('settings.html', userinfo=userinfo)
+
+#New ticket page
+@app.route('/newticket', methods=['GET', 'POST'])
+def newticket():
+    if session:
+        cursor = sqlconn.cursor()
+        severityoptions = cursor.execute('SELECT name FROM [severity]').fetchall()
+        typeoptions = cursor.execute('SELECT name FROM [type]').fetchall()
+    else:
+        return render_template('error.html')
+
+    if request.method == 'POST':
+        cursor.execute('exec createNewTicket @userName=?, @title=?, @severityName=?, @typeName=?, @description=?', session['username'], request.form['title'], request.form['severity'], request.form['type'], request.form['description'])
+        sqlconn.commit()
+        return render_template('index.html')
+        
+    return render_template('newticket.html', typeoptions=typeoptions, severityoptions=severityoptions)
 
 #Admin page
 @app.route('/admin')
