@@ -1,0 +1,8 @@
+[superdesk]
+ENCRYPTIONKEY = 'ENCRYPTIONKEY'
+DRIVER = {FreeTDS}
+SERVER = databaseserver
+PORT = 1433
+DATABASE = databasename
+UID = username
+PWD = password
