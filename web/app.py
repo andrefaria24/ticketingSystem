@@ -2,19 +2,13 @@ import pyodbc, os
 from flask import Flask, render_template, request, session, redirect, url_for
 from cryptography.fernet import Fernet
 
-app = Flask(__name__,static_url_path='/static')
+app = Flask(__name__, static_url_path='/static')
 app.secret_key = os.urandom(32)
 
-#encryptionKey = Fernet.generate_key()
 encryptionKey = 'AXO74KhnXdkcJIBZSd6dvxlaFaVjDb7sIfftbZJNnnY='
 
 #Establish database connection parameters
-sqlconn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=localhost;'
-                      'Database=superdesk;'
-                      'UID=superdesk;'
-                      'PWD=superdesk;'
-                      )
+sqlconn = pyodbc.connect('DRIVER=FreeTDS;SERVER=database_host;PORT=1433;DATABASE=superdesk;UID=superdesk;PWD=superdesk;TDS_Version=8.0;')
 
 #Password encryption logic
 def pwEncrypt(pw):
@@ -179,4 +173,4 @@ def admin():
     return render_template('admin.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, port='80')
+    app.run(debug=True, host='0.0.0.0', port='80')

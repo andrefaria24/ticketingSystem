@@ -4,7 +4,7 @@ services:
     container_name: database_host
     image: mcr.microsoft.com/mssql/server:2017-latest
     ports:
-      - 1433:1433
+      - "1433:1433"
     environment:
       - "ACCEPT_EULA=Y"
       - "SA_PASSWORD=Th1s1sC0mpl3x#"
@@ -12,6 +12,19 @@ services:
     volumes:
       - "./database:/var/opt/mssql"
     networks:
-      - default
+      - backend
+  website:
+    build: ./web
+    depends_on:
+      - database
+    container_name: website_host
+    ports:
+      - "80:80"
+    volumes:
+      - "./web:/app"
+    networks:
+      - frontend
+      - backend
 networks:
-  default:
+  frontend:
+  backend:
