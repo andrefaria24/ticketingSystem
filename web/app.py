@@ -1,14 +1,25 @@
 import pyodbc, os
+import configparser
 from flask import Flask, render_template, request, session, redirect, url_for
 from cryptography.fernet import Fernet
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = os.urandom(32)
 
-encryptionKey = 'AXO74KhnXdkcJIBZSd6dvxlaFaVjDb7sIfftbZJNnnY='
+config = configparser.ConfigParser()
+config.read('superdesk.config')
+
+encryptionKey = config['superdesk']['ENCRYPTIONKEY']
+_driver = config['superdesk']['DRIVER']
+_server = config['superdesk']['SERVER']
+_port = config['superdesk']['PORT']
+_database = config['superdesk']['DATABASE']
+_username = config['superdesk']['UID']
+_password = config['superdesk']['PWD']
 
 #Establish database connection parameters
-sqlconn = pyodbc.connect('DRIVER=FreeTDS;SERVER=database_host;PORT=1433;DATABASE=superdesk;UID=superdesk;PWD=superdesk;TDS_Version=8.0;')
+#sqlconn = pyodbc.connect('DRIVER=FreeTDS;SERVER=svr;PORT=1433;DATABASE=dbname;UID=username;PWD=pw;TDS_Version=8.0;')
+sqlconn = pyodbc.connect('DRIVER=%s;SERVER=%s;PORT=%s;DATABASE=%s;UID=%s;PWD=%s;' % ( _driver, _server, _port, _database, _username, _password))
 
 #Password encryption logic
 def pwEncrypt(pw):
