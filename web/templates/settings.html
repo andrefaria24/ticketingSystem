@@ -19,6 +19,7 @@
             <input type="text" name="phone" class="form-control" value={{ userinfo[6] }}><br><br>
         </div>
         
+        {% if session['permissions'] != 4 %}
         <div class="form-group">
             <b>Change Password</b><br><br>
             <label for="newpassword">New Password</label>
@@ -26,6 +27,7 @@
             <label for="confpassword">Confirm Password</label>
             <input type="password" class="form-control" name="confpassword"><br>
         </div>
+        {% endif %}
         <input type="submit" class="btn btn-primary mb-2" name="submit" value="Change Settings">
     </form>
     </p>

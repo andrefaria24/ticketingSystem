@@ -1,7 +1,7 @@
 {%extends "layout.html"%}
 {%block content%}
     <div class="tickets">
-        {% if session['permissions'] == 1 or session['permissions'] == 2 %}
+        {% if session['permissions'] == 1 or session['permissions'] == 2 or session['permissions'] == 4 %}
         <p>
         <h4>All Open Tickets</h4>
         <table class="table">
