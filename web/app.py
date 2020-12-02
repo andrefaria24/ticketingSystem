@@ -3,7 +3,7 @@ import configparser
 from flask import Flask, render_template, request, session, redirect, url_for
 from cryptography.fernet import Fernet
 
-app = Flask(__name__, static_url_path='/static')
+app = Flask(__name__)
 app.secret_key = os.urandom(32)
 
 config = configparser.ConfigParser()
@@ -183,5 +183,5 @@ def newticket():
 def admin():
     return render_template('admin.html')
 
-#if __name__ == '__main__':
-#    app.run(debug=True, host='0.0.0.0', port='80')
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port='80')
