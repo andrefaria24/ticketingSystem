@@ -27,6 +27,8 @@ jobs:
         platform-version: '3.8'
 
     - name: 'Deploy to Azure Web App'
+      env:
+        SRC_FOLDER: web
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'devfariasuperdesk'
