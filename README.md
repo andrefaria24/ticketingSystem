@@ -1,9 +1,3 @@
-* Live Site:
-    * URL: https://devfariasuperdesk.azurewebsites.net/
-    * Username: readonly
-    * Password: s5FRj#%a
-    * Change password functionality is disabled for this user within the user settings page
-
 * Working functionality:
     * Login system
     * User permissions
