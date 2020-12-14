@@ -439,20 +439,20 @@ GO
 /****** END CREATE STORED PROCEDURES ******/
 
 /****** INSERT DEFAULT VALUES ******/
-INSERT INTO [permission] (name)
-VALUES ('Admin'), ('Helpdesk'), ('Customer')
+INSERT INTO [permission] (name, active)
+VALUES ('Admin', 1), ('Helpdesk', 1), ('Customer', 1)
 GO
 
-INSERT INTO [severity] (name)
-VALUES ('Emergency'), ('High'), ('Medium'), ('Low')
+INSERT INTO [severity] (name, active)
+VALUES ('Emergency', 1), ('High', 1), ('Medium', 1), ('Low', 1)
 GO
 
-INSERT INTO [status] (name)
-VALUES ('Open'), ('Pending'), ('Closed')
+INSERT INTO [status] (name, active)
+VALUES ('Open', 1), ('Pending', 1), ('Closed', 1)
 GO
 
-INSERT INTO [type] (name)
-VALUES ('General')
+INSERT INTO [type] (name, active)
+VALUES ('General', 1)
 GO
 
 INSERT INTO [user] (username, password, firstname, lastname, email, permissions, active)
