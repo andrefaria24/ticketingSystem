@@ -2,8 +2,7 @@
 {%block admincontent%}
     <div class="editmenu">
         <ul>
-            <button type="button"><a href="{{ url_for('admin_new_ticket_types') }}">New</a></button> 
-            <button type="button"><a href=#>Delete</a></button> 
+            <button type="button"><a href="{{ url_for('admin_new_ticket_types') }}">New</a></button>
         </ul>
     </div>
     
@@ -12,9 +11,8 @@
                 <th>Name</th>
             </tr>
         {% for type in alltypes %}
-            
             <tr>
-                <td><a href=#>{{ type[1] }}</a></td>
+                <td><a href={{ url_for('admin_edit_types_details', id=type[0])}}>{{ type[1] }}</a></td>
             </tr>
         {% endfor %}
     </table>

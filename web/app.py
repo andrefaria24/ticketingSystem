@@ -207,9 +207,6 @@ def admin_edit_users_details(id):
         return render_template('error.html')
 
     if request.method == 'POST':
-        print(request.form)
-        print(userinfo)
-
         if request.form['email'] != userinfo[2]:
             cursor = sqlconn.cursor()
             cursor.execute('UPDATE [user] SET email = ? WHERE id = ?', request.form['email'], userinfo[0])
@@ -241,6 +238,25 @@ def admin_edit_ticket_types():
         return render_template('error.html')
 
     return render_template('admin_edit_ticket_types.html', alltypes=gettickettypes)
+
+#Admin page - Edit Types - Details
+@app.route('/admin/edit/types/<id>', methods=['GET', 'POST'])
+def admin_edit_types_details(id):
+    cursor = sqlconn.cursor()
+    typeinfo = cursor.execute('exec getTypeInfo @typeId=?', id).fetchone()
+
+    if request.method == 'POST':
+        if request.form['typename'] != typeinfo[1]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [type] SET name = ? WHERE id = ?', request.form['typename'], typeinfo[0])
+        if request.form['active'] != typeinfo[2]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [type] SET [type].active = ? WHERE id = ?', request.form['active'], request.form['id'])
+        sqlconn.commit()
+
+        return render_template('admin_edit_ticket_types.html', alltypes=cursor.execute('SELECT id, name FROM [type]').fetchall())
+
+    return render_template('admin_edit_type_details.html', type=typeinfo)
 
 #Admin page - New Ticket Types
 @app.route('/admin/new/types', methods=['GET', 'POST'])
