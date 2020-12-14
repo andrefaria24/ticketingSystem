@@ -1,8 +1,13 @@
 body
 {
-    background-color:#fff;
+    background-color:#efefef;
     -webkit-font-smoothing: antialiased;
     font: normal 14px Roboto,arial,sans-serif;
+}
+
+.navbar .navbar-brand
+{
+    color: #4c47ef;
 }
 
 .container
@@ -37,4 +42,34 @@ h4
     border-bottom-width:1px;
     padding-bottom:10px;
     text-align: center;
+}
+
+.sidenav
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 25%;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    display: block;
+}
+
+.sidenav ul
+{
+    list-style-type: none;
+
+}
+
+.sidenav li a
+{
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.admincontent
+{
+    margin-left:25%;
 }

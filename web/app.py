@@ -18,7 +18,6 @@ _username = config['superdesk']['UID']
 _password = config['superdesk']['PWD']
 
 #Establish database connection parameters
-#sqlconn = pyodbc.connect('DRIVER=FreeTDS;SERVER=svr;PORT=1433;DATABASE=dbname;UID=username;PWD=pw;TDS_Version=8.0;')
 sqlconn = pyodbc.connect('DRIVER=%s;SERVER=%s;PORT=%s;DATABASE=%s;UID=%s;PWD=%s;' % ( _driver, _server, _port, _database, _username, _password))
 
 #Password encryption logic
@@ -178,10 +177,64 @@ def newticket():
         
     return render_template('newticket.html', typeoptions=typeoptions, severityoptions=severityoptions)
 
-#Admin page
+#Admin page - Home
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
+
+#Admin page - Edit Users
+@app.route('/admin/edit/users', methods=['GET', 'POST'])
+def admin_edit_users():
+    if session['admin'] == True:
+        cursor = sqlconn.cursor()
+        getusernames = cursor.execute('SELECT id, username FROM [user]').fetchall()
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_edit_users.html', allusers=getusernames)
+
+#Admin page - Edit Users - Details
+@app.route('/admin/edit/users/<id>', methods=['GET', 'POST'])
+def admin_edit_users_details(id):
+    if session['admin'] == True:
+        cursor = sqlconn.cursor()
+        userinfo = cursor.execute('exec getUserInfo @userId=?', id).fetchone()
+        permissions = cursor.execute('SELECT name FROM [permission]').fetchall()
+    else:
+        return render_template('error.html')
+
+    if request.method == 'POST':
+        if request.form['username'] != userinfo[1]:
+            usernames = cursor.execute('SELECT username FROM [user]').fetchall()
+
+            print(userinfo[1])
+
+    return render_template('admin_edit_users_details.html', user=userinfo, permissions=permissions)
+
+#Admin page - Edit Ticket Types
+@app.route('/admin/edit/types', methods=['GET', 'POST'])
+def admin_edit_ticket_types():
+    if session['admin'] == True:
+        cursor = sqlconn.cursor()
+        gettickettypes = cursor.execute('SELECT id, name FROM [type]').fetchall()
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_edit_ticket_types.html', alltypes=gettickettypes)
+
+#Admin page - New Ticket Types
+@app.route('/admin/new/types', methods=['GET', 'POST'])
+def admin_new_ticket_types():
+    if session['admin'] == True:
+        if request.method == 'POST':
+            cursor = sqlconn.cursor()
+            cursor.execute('exec createNewTicketType @typename=?', request.form['typename'])
+            sqlconn.commit()
+            return render_template('admin_edit_ticket_types.html', alltypes=cursor.execute('SELECT id, name FROM [type]').fetchall())
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_new_ticket_types.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port='80')

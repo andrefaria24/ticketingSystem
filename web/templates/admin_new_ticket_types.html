@@ -1,0 +1,11 @@
+{%extends "admin.html"%}
+{%block admincontent%}
+    <h4>New Ticket Type</h4>
+    <form id="newtickettype" method="POST" >
+        <div class="form-group">
+            <label for="typename">Name</label>
+            <input type="text" class="form-control" name="typename" required><br>
+            <input type="submit" class="btn btn-primary mb-2" name="submit" value="Submit">
+        </div>
+    </form>
+{%endblock%}

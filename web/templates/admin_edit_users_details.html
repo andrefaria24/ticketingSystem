@@ -1,0 +1,34 @@
+{%extends "admin.html"%}
+{%block admincontent%}
+    <h4>{{ user[1] }}</h4>
+    <form id="edituserdetails" method="POST" >
+        <div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" name="id" value={{ user[0] }} readonly><br>
+
+            <label for="username">Username</label>
+            <input type="text" class="form-control" name="username" value={{ user[1] }}><br>
+
+            <label for="email">Email</label>
+            <input type="text" class="form-control" name="email" value={{ user[2] }}><br>
+
+            <label for="firstname">First Name</label>
+            <input type="text" class="form-control" name="firstname" value={{ user[3] }}><br>
+
+            <label for="lastname">Last Name</label>
+            <input type="text" class="form-control" name="lastname" value={{ user[4] }}><br>
+
+            <label for="phone">Phone</label>
+            <input type="text" class="form-control" name="phone" value={{ user[5] }}><br>
+
+            <label for="permissions">Permissions</label>
+            <select name="permissions" class="form-control">
+                {% for permission in permissions %}
+                    <option value="{{ permission[0] }}" {% if permission[0] == user[6] %} selected {% endif %}>{{ permission[0] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <input type="submit" class="btn btn-primary mb-2" name="submit" value="Update">
+        </div>
+    </form>
+{%endblock%}

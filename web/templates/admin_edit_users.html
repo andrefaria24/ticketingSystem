@@ -1,0 +1,13 @@
+{%extends "admin.html"%}
+{%block admincontent%}
+    <table class="table">
+        <tr>
+            <th>Username</th>
+        </tr>
+        {% for user in allusers %}
+            <tr>
+                <td><a href={{ url_for('admin_edit_users_details', id=user[0])}}>{{ user[1] }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{%endblock%}

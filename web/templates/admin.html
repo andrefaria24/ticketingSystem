@@ -1,4 +1,23 @@
 {%extends "layout.html"%}
 {%block content%}
-    This is the Admin portal
+    <div class="sidenav">
+        
+        <ul>
+            Users
+            <li><a href=#>New User</a></li>
+            <li><a href="{{ url_for('admin_edit_users') }}">Edit Users</a></li>
+        </ul>
+        
+        <ul>
+            Settings
+            <li><a href="{{ url_for('admin_edit_ticket_types') }}">Ticket Types</a></li>
+            <li><a href=#>Ticket Severity</a></li>
+            <li><a href=#>Ticket Status</a></li>
+        </ul>
+    </div>
+
+    <div class="admincontent">
+        {%block admincontent%}
+        {%endblock%}
+    </div>
 {%endblock%}
