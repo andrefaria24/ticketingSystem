@@ -3,12 +3,10 @@ GO
 
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-CREATE PROCEDURE [dbo].[getAllTickets]
+CREATE OR ALTER PROCEDURE [dbo].[getAllTickets]
 
 AS
 BEGIN
@@ -23,4 +21,3 @@ BEGIN
 		LEFT JOIN [type] AS type ON [tickets].type = [type].id
 END
 GO
-

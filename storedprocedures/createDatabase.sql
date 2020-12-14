@@ -263,8 +263,8 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	INSERT INTO [type] (name)
-	VALUES (@typename)
+	INSERT INTO [type] (name, active)
+	VALUES (@typename, active)
 END
 GO
 
@@ -434,6 +434,23 @@ BEGIN
 	FROM [tickets]
 	LEFT JOIN [type] AS type ON [tickets].type = [type].id
 	WHERE [tickets].id = @ticketId
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[getTypeInfo] @typeId int
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT [type].id, [type].name, [type].active
+		FROM [type]
+		WHERE [type].id = @typeId
 END
 GO
 /****** END CREATE STORED PROCEDURES ******/

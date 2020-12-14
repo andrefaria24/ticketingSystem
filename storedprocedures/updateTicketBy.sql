@@ -3,12 +3,10 @@ GO
 
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-CREATE PROCEDURE [dbo].[updateTicketBy]
+CREATE OR ALTER PROCEDURE [dbo].[updateTicketBy]
 	@ticketId int,
 	@userName varchar(50)
 AS

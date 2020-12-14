@@ -3,12 +3,10 @@ GO
 
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-CREATE PROCEDURE [dbo].[updateTicketStatus]
+CREATE OR ALTER PROCEDURE [dbo].[updateTicketStatus]
 	@ticketId int, 
 	@statusName varchar(50)
 AS
@@ -22,4 +20,3 @@ BEGIN
 	WHERE [tickets].id = @ticketId
 END
 GO
-

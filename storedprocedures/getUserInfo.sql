@@ -6,8 +6,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-ALTER PROCEDURE [dbo].[getUserInfo] @userId int
+CREATE OR ALTER PROCEDURE [dbo].[getUserInfo] @userId int
 
 AS
 BEGIN
@@ -18,3 +17,4 @@ BEGIN
 		LEFT JOIN [permission] AS permission ON [user].permissions = [permission].id
 		WHERE [user].id = @userId
 END
+GO

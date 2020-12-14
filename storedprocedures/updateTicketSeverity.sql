@@ -6,7 +6,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-ALTER PROCEDURE [dbo].[updateTicketSeverity]
+CREATE OR ALTER PROCEDURE [dbo].[updateTicketSeverity]
 	@ticketId int, 
 	@severityName varchar(50)
 AS
@@ -20,3 +20,4 @@ BEGIN
 	LEFT JOIN [severity] AS severity ON [tickets].severity = [severity].id
 	WHERE [tickets].id = @ticketId
 END
+GO

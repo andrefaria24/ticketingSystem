@@ -3,12 +3,10 @@ GO
 
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-CREATE PROCEDURE [dbo].[getTicketInfo] @ticketId int
+CREATE OR ALTER PROCEDURE [dbo].[getTicketInfo] @ticketId int
 
 AS
 BEGIN
@@ -24,4 +22,3 @@ BEGIN
 		WHERE [tickets].id = @ticketId
 END
 GO
-
