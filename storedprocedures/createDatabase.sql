@@ -345,7 +345,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT [user].id, [user].username, [user].email, [user].firstname, [user].lastname, [user].phone, permission.name
+	SELECT [user].id, [user].username, [user].email, [user].firstname, [user].lastname, [user].phone, permission.name, [user].active
 		FROM [user]
 		LEFT JOIN [permission] AS permission ON [user].permissions = [permission].id
 		WHERE [user].id = @userId
@@ -455,8 +455,8 @@ INSERT INTO [type] (name)
 VALUES ('General')
 GO
 
-INSERT INTO [user] (username, password, firstname, lastname, email, permissions)
-VALUES ('admin', 'gAAAAABfyaAiCsft450tsxq-lXW15Gz1D9UaZLWkiYycZlzC6sjw3HLCJnJyvHraGrf4sfMlNWk9yFyIZRG_EjSnP0XnF_Sl9A==', 'Super', 'Admin', 'admin@superdesk.com', 1)
+INSERT INTO [user] (username, password, firstname, lastname, email, permissions, active)
+VALUES ('admin', 'gAAAAABfyaAiCsft450tsxq-lXW15Gz1D9UaZLWkiYycZlzC6sjw3HLCJnJyvHraGrf4sfMlNWk9yFyIZRG_EjSnP0XnF_Sl9A==', 'Super', 'Admin', 'admin@superdesk.com', 1, 1)
 GO
 /****** END INSERT DEFAULT VALUES ******/
 

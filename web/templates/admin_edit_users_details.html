@@ -7,7 +7,7 @@
             <input type="text" class="form-control" name="id" value={{ user[0] }} readonly><br>
 
             <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" value={{ user[1] }}><br>
+            <input type="text" class="form-control" name="username" value={{ user[1] }} readonly><br>
 
             <label for="email">Email</label>
             <input type="text" class="form-control" name="email" value={{ user[2] }}><br>
@@ -26,6 +26,20 @@
                 {% for permission in permissions %}
                     <option value="{{ permission[0] }}" {% if permission[0] == user[6] %} selected {% endif %}>{{ permission[0] }}</option>
                 {% endfor %}
+            </select><br>
+
+            <label for="active">Active</label>
+            <select name="active" class="form-control">
+                {% if user[7] == True %}
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                {% elif user[7] == False %}
+                    <option value="true">True</option>
+                    <option value="false" selected>False</option>
+                {% else %}
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                {% endif %}
             </select><br>
 
             <input type="submit" class="btn btn-primary mb-2" name="submit" value="Update">

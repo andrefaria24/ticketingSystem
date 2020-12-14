@@ -56,17 +56,20 @@ def home():
             cursor.execute('SELECT * FROM [user] WHERE username = ?', username)
             account = cursor.fetchone()
 
-            session['loggedin'] = True
-            session['id'] = account[0]
-            session['username'] = account[1]
-            session['permissions'] = account[7]
-
-            if account[7] == 1:
-                session['admin'] = True
+            if account[8] == False:
+                return render_template('index.html', msg='User is currently marked as inactive')
             else:
-                session['admin'] = False
+                session['loggedin'] = True
+                session['id'] = account[0]
+                session['username'] = account[1]
+                session['permissions'] = account[7]
 
-            return render_template('index.html')
+                if account[7] == 1:
+                    session['admin'] = True
+                else:
+                    session['admin'] = False
+
+                return render_template('index.html')
         else:
             return render_template('index.html', msg='Incorrect Username/Password')
     else:
@@ -204,10 +207,27 @@ def admin_edit_users_details(id):
         return render_template('error.html')
 
     if request.method == 'POST':
-        if request.form['username'] != userinfo[1]:
-            usernames = cursor.execute('SELECT username FROM [user]').fetchall()
+        print(request.form)
+        print(userinfo)
 
-            print(userinfo[1])
+        if request.form['email'] != userinfo[2]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [user] SET email = ? WHERE id = ?', request.form['email'], userinfo[0])
+        if request.form['firstname'] != userinfo[3]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [user] SET firstname = ? WHERE id = ?', request.form['firstname'], userinfo[0])
+        if request.form['lastname'] != userinfo[4]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [user] SET lastname = ? WHERE id = ?', request.form['lastname'], userinfo[0])
+        if request.form['phone'] != userinfo[5]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [user] SET phone = ? WHERE id = ?', request.form['phone'], userinfo[0])
+        if request.form['permissions'] != userinfo[6]:
+            cursor.execute('UPDATE [user] SET [user].permissions = (SELECT id FROM permission WHERE name = ?) WHERE [user].id = ?', request.form['permissions'], request.form['id'])
+        if request.form['active'] != userinfo[7]:
+            cursor.execute('UPDATE [user] SET [user].active = ? WHERE id = ?', request.form['active'], request.form['id'])
+        sqlconn.commit()
+        return render_template('admin_edit_users.html', allusers=cursor.execute('SELECT id, username FROM [user]').fetchall())
 
     return render_template('admin_edit_users_details.html', user=userinfo, permissions=permissions)
 
