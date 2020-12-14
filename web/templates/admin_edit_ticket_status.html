@@ -1,0 +1,19 @@
+{%extends "admin.html"%}
+{%block admincontent%}
+    <div class="editmenu">
+        <ul>
+            <button type="button"><a href="{{ url_for('admin_new_ticket_status')}}">New</a></button>
+        </ul>
+    </div>
+    
+    <table class="table">
+            <tr>
+                <th>Name</th>
+            </tr>
+        {% for status in allstatus %}
+            <tr>
+                <td><a href="{{ url_for('admin_edit_status_details', id=status[0])}}">{{ status[1] }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{%endblock%}

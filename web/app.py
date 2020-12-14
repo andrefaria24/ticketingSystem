@@ -333,5 +333,49 @@ def admin_edit_sev_details(id):
 
     return render_template('admin_edit_sev_details.html', sev=sevinfo)
 
+#Admin page - New Ticket Status
+@app.route('/admin/new/status', methods=['GET', 'POST'])
+def admin_new_ticket_status():
+    if session['admin'] == True:
+        if request.method == 'POST':
+            cursor = sqlconn.cursor()
+            cursor.execute('exec createNewTicketStatus @statusname=?', request.form['statusname'])
+            sqlconn.commit()
+            return render_template('admin_edit_ticket_status.html', allstatus=cursor.execute('SELECT id, name FROM [status]').fetchall())
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_new_ticket_status.html')
+
+#Admin page - Edit Ticket Status
+@app.route('/admin/edit/status', methods=['GET', 'POST'])
+def admin_edit_ticket_status():
+    if session['admin'] == True:
+        cursor = sqlconn.cursor()
+        getticketstatus = cursor.execute('SELECT id, name FROM [status]').fetchall()
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_edit_ticket_status.html', allstatus=getticketstatus)
+
+#Admin page - Edit Ticket Status - Details
+@app.route('/admin/edit/status/<id>', methods=['GET', 'POST'])
+def admin_edit_status_details(id):
+    cursor = sqlconn.cursor()
+    statusinfo = cursor.execute('exec getStatusInfo @statusId=?', id).fetchone()
+
+    if request.method == 'POST':
+        if request.form['statusname'] != statusinfo[1]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [status] SET name = ? WHERE id = ?', request.form['statusname'], statusinfo[0])
+        if request.form['active'] != statusinfo[2]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [status] SET [status].active = ? WHERE id = ?', request.form['active'], request.form['id'])
+        sqlconn.commit()
+
+        return render_template('admin_edit_ticket_status.html', allstatus=cursor.execute('SELECT id, name FROM [status]').fetchall())
+
+    return render_template('admin_edit_status_details.html', status=statusinfo)
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port='80')

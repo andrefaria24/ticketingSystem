@@ -1,0 +1,29 @@
+{%extends "admin.html"%}
+{%block admincontent%}
+    <h4>{{ status[1] }}</h4>
+    <form id="editstatusdetails" method="POST" >
+        <div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" name="id" value={{ status[0] }} readonly><br>
+
+            <label for="statusname">Name</label>
+            <input type="text" class="form-control" name="statusname" value={{ status[1] }}><br>
+
+            <label for="active">Active</label>
+            <select name="active" class="form-control">
+                {% if status[2] == True %}
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                {% elif status[2] == False %}
+                    <option value="true">True</option>
+                    <option value="false" selected>False</option>
+                {% else %}
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                {% endif %}
+            </select><br>
+
+            <input type="submit" class="btn btn-primary mb-2" name="submit" value="Update">
+        </div>
+    </form>
+{%endblock%}
