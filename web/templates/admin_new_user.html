@@ -1,0 +1,36 @@
+{%extends "admin.html"%}
+{%block admincontent%}
+    <h4>New User Setup</h4>
+    <form id="newuser" method="POST" >
+        <div class="form-group">
+            <label for="username">Username *</label>
+            <input type="text" class="form-control" name="username" required><br>
+
+            <label for="email">Email</label>
+            <input type="text" class="form-control" name="email"><br>
+
+            <label for="firstname">First Name *</label>
+            <input type="text" class="form-control" name="firstname" required><br>
+
+            <label for="lastname">Last Name *</label>
+            <input type="text" class="form-control" name="lastname" required><br>
+
+            <label for="phone">Phone</label>
+            <input type="text" class="form-control" name="phone"><br>
+
+            <label for="permissions">Permissions *</label>
+            <select name="permissions" class="form-control">
+                {% for permission in permissions %}
+                    <option value="{{ permission[0] }}">{{ permission[0] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="password">Password *</label>
+            <input type="password" class="form-control" name="password" required><br>
+
+            <input type="submit" class="btn btn-primary mb-2" name="submit" value="Create"><br>
+
+            Fields marked with * are required
+        </div>
+    </form>
+{%endblock%}

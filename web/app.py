@@ -185,6 +185,23 @@ def newticket():
 def admin():
     return render_template('admin.html')
 
+#Admin page - New User Setup
+@app.route('/admin/new/user', methods=['GET', 'POST'])
+def admin_new_user():
+    if session['admin'] == True:
+        cursor = sqlconn.cursor()
+        permissions = cursor.execute('SELECT name FROM [permission]').fetchall()
+
+        if request.method == 'POST':
+            cursor = sqlconn.cursor()
+            cursor.execute('exec createNewUser @userName=?, @email=?, @firstName=?, @lastName=?, @phone=?, @permissions=?, @password=?', request.form['username'], request.form['email'], request.form['firstname'], request.form['lastname'], request.form['phone'], request.form['permissions'], pwEncrypt(request.form['password']))
+            sqlconn.commit()
+            return render_template('index.html')
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_new_user.html', permissions=permissions)
+
 #Admin page - Edit Users
 @app.route('/admin/edit/users', methods=['GET', 'POST'])
 def admin_edit_users():
@@ -228,6 +245,20 @@ def admin_edit_users_details(id):
 
     return render_template('admin_edit_users_details.html', user=userinfo, permissions=permissions)
 
+#Admin page - New Ticket Types
+@app.route('/admin/new/types', methods=['GET', 'POST'])
+def admin_new_ticket_types():
+    if session['admin'] == True:
+        if request.method == 'POST':
+            cursor = sqlconn.cursor()
+            cursor.execute('exec createNewTicketType @typename=?', request.form['typename'])
+            sqlconn.commit()
+            return render_template('admin_edit_ticket_types.html', alltypes=cursor.execute('SELECT id, name FROM [type]').fetchall())
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_new_ticket_types.html')
+
 #Admin page - Edit Ticket Types
 @app.route('/admin/edit/types', methods=['GET', 'POST'])
 def admin_edit_ticket_types():
@@ -257,20 +288,6 @@ def admin_edit_types_details(id):
         return render_template('admin_edit_ticket_types.html', alltypes=cursor.execute('SELECT id, name FROM [type]').fetchall())
 
     return render_template('admin_edit_type_details.html', type=typeinfo)
-
-#Admin page - New Ticket Types
-@app.route('/admin/new/types', methods=['GET', 'POST'])
-def admin_new_ticket_types():
-    if session['admin'] == True:
-        if request.method == 'POST':
-            cursor = sqlconn.cursor()
-            cursor.execute('exec createNewTicketType @typename=?', request.form['typename'])
-            sqlconn.commit()
-            return render_template('admin_edit_ticket_types.html', alltypes=cursor.execute('SELECT id, name FROM [type]').fetchall())
-    else:
-        return render_template('error.html')
-
-    return render_template('admin_new_ticket_types.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port='80')
