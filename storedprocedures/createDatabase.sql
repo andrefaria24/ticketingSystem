@@ -475,6 +475,45 @@ BEGIN
 	VALUES (@userName, @password, @email, @firstName, @lastName, @phone, (SELECT [permission].id FROM [permission] WHERE [permission].name = @permissions), 1)
 END
 GO
+
+USE [superdesk]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[getSevInfo] @sevId int
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT [severity].id, [severity].name, [severity].active
+		FROM [severity]
+		WHERE [severity].id = @sevId
+END
+GO
+
+USE [superdesk]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[createNewTicketSev]
+	@sevname varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	INSERT INTO [severity] (name, active)
+	VALUES (@sevname, 1)
+END
+GO
 /****** END CREATE STORED PROCEDURES ******/
 
 /****** INSERT DEFAULT VALUES ******/

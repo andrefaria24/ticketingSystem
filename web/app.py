@@ -85,6 +85,55 @@ def logout():
 
     return redirect(url_for('home'))
 
+#Settings page
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    #Fetch and display user information from database
+    cursor = sqlconn.cursor()
+    cursor.execute('SELECT * FROM [user] WHERE username = ?', (session['username']))
+    userinfo = cursor.fetchone()
+
+    #If any changes are detected, update database tables accordingly
+    if request.method == 'POST':
+        if request.form['firstname'] != userinfo[4]:
+            cursor.execute('UPDATE [user] SET firstname = ? WHERE id = ?', request.form['firstname'], session['id'])
+        if request.form['lastname'] != userinfo[5]:
+            cursor.execute('UPDATE [user] SET lastname = ? WHERE id = ?', request.form['lastname'], session['id'])
+        if request.form['email'] != userinfo[3]:
+            cursor.execute('UPDATE [user] SET email = ? WHERE id = ?', request.form['email'], session['id'])
+        if request.form['phone'] != userinfo[6]:
+            cursor.execute('UPDATE [user] SET phone = ? WHERE id = ?', request.form['phone'], session['id'])
+
+        if (request.form['newpassword'] != '') and (request.form['newpassword'] == request.form['confpassword']):
+            cursor.execute('UPDATE [user] SET password = ? WHERE id = ?', pwEncrypt(request.form['newpassword']), session['id'])
+            sqlconn.commit()
+            return logout()
+        elif (request.form['newpassword'] != '') and (request.form['newpassword'] != request.form['confpassword']):
+            print("PASSWORDS MUST MATCH")
+        sqlconn.commit()
+
+        cursor.execute('SELECT * FROM [user] WHERE username = ?', (session['username']))
+        userinfo = cursor.fetchone()
+
+    return render_template('settings.html', userinfo=userinfo)
+
+#New Ticket page
+@app.route('/newticket', methods=['GET', 'POST'])
+def newticket():
+    if session:
+        cursor = sqlconn.cursor()
+        severityoptions = cursor.execute('SELECT name FROM [severity]').fetchall()
+        typeoptions = cursor.execute('SELECT name FROM [type]').fetchall()
+    else:
+        return render_template('error.html')
+
+    if request.method == 'POST':
+        cursor.execute('exec createNewTicket @userName=?, @title=?, @severityName=?, @typeName=?, @description=?', session['username'], request.form['title'], request.form['severity'], request.form['type'], request.form['description'])
+        sqlconn.commit()
+        return render_template('index.html')
+        
+    return render_template('newticket.html', typeoptions=typeoptions, severityoptions=severityoptions)
+
 #Tickets page
 @app.route('/tickets')
 def tickets():
@@ -130,55 +179,6 @@ def ticketdetails(id):
     ticketinfo = cursor.execute('exec getTicketInfo @ticketId = ?', id).fetchone()
 
     return render_template('ticketdetails.html', ticket=ticketinfo, statusoptions=statusoptions, severityoptions=severityoptions, typeoptions=typeoptions)
-
-#Settings page
-@app.route('/settings', methods=['GET', 'POST'])
-def settings():
-    #Fetch and display user information from database
-    cursor = sqlconn.cursor()
-    cursor.execute('SELECT * FROM [user] WHERE username = ?', (session['username']))
-    userinfo = cursor.fetchone()
-
-    #If any changes are detected, update database tables accordingly
-    if request.method == 'POST':
-        if request.form['firstname'] != userinfo[4]:
-            cursor.execute('UPDATE [user] SET firstname = ? WHERE id = ?', request.form['firstname'], session['id'])
-        if request.form['lastname'] != userinfo[5]:
-            cursor.execute('UPDATE [user] SET lastname = ? WHERE id = ?', request.form['lastname'], session['id'])
-        if request.form['email'] != userinfo[3]:
-            cursor.execute('UPDATE [user] SET email = ? WHERE id = ?', request.form['email'], session['id'])
-        if request.form['phone'] != userinfo[6]:
-            cursor.execute('UPDATE [user] SET phone = ? WHERE id = ?', request.form['phone'], session['id'])
-
-        if (request.form['newpassword'] != '') and (request.form['newpassword'] == request.form['confpassword']):
-            cursor.execute('UPDATE [user] SET password = ? WHERE id = ?', pwEncrypt(request.form['newpassword']), session['id'])
-            sqlconn.commit()
-            return logout()
-        elif (request.form['newpassword'] != '') and (request.form['newpassword'] != request.form['confpassword']):
-            print("PASSWORDS MUST MATCH")
-        sqlconn.commit()
-
-        cursor.execute('SELECT * FROM [user] WHERE username = ?', (session['username']))
-        userinfo = cursor.fetchone()
-
-    return render_template('settings.html', userinfo=userinfo)
-
-#New ticket page
-@app.route('/newticket', methods=['GET', 'POST'])
-def newticket():
-    if session:
-        cursor = sqlconn.cursor()
-        severityoptions = cursor.execute('SELECT name FROM [severity]').fetchall()
-        typeoptions = cursor.execute('SELECT name FROM [type]').fetchall()
-    else:
-        return render_template('error.html')
-
-    if request.method == 'POST':
-        cursor.execute('exec createNewTicket @userName=?, @title=?, @severityName=?, @typeName=?, @description=?', session['username'], request.form['title'], request.form['severity'], request.form['type'], request.form['description'])
-        sqlconn.commit()
-        return render_template('index.html')
-        
-    return render_template('newticket.html', typeoptions=typeoptions, severityoptions=severityoptions)
 
 #Admin page - Home
 @app.route('/admin')
@@ -270,7 +270,7 @@ def admin_edit_ticket_types():
 
     return render_template('admin_edit_ticket_types.html', alltypes=gettickettypes)
 
-#Admin page - Edit Types - Details
+#Admin page - Edit Ticket Types - Details
 @app.route('/admin/edit/types/<id>', methods=['GET', 'POST'])
 def admin_edit_types_details(id):
     cursor = sqlconn.cursor()
@@ -288,6 +288,50 @@ def admin_edit_types_details(id):
         return render_template('admin_edit_ticket_types.html', alltypes=cursor.execute('SELECT id, name FROM [type]').fetchall())
 
     return render_template('admin_edit_type_details.html', type=typeinfo)
+
+#Admin page - New Ticket Severity
+@app.route('/admin/new/severity', methods=['GET', 'POST'])
+def admin_new_ticket_sev():
+    if session['admin'] == True:
+        if request.method == 'POST':
+            cursor = sqlconn.cursor()
+            cursor.execute('exec createNewTicketSev @sevname=?', request.form['sevname'])
+            sqlconn.commit()
+            return render_template('admin_edit_ticket_sev.html', allsev=cursor.execute('SELECT id, name FROM [severity]').fetchall())
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_new_ticket_sev.html')
+
+#Admin page - Edit Ticket Severity
+@app.route('/admin/edit/severity', methods=['GET', 'POST'])
+def admin_edit_ticket_sev():
+    if session['admin'] == True:
+        cursor = sqlconn.cursor()
+        getticketsev = cursor.execute('SELECT id, name FROM [severity]').fetchall()
+    else:
+        return render_template('error.html')
+
+    return render_template('admin_edit_ticket_sev.html', allsev=getticketsev)
+
+#Admin page - Edit Ticket Severity - Details
+@app.route('/admin/edit/severity/<id>', methods=['GET', 'POST'])
+def admin_edit_sev_details(id):
+    cursor = sqlconn.cursor()
+    sevinfo = cursor.execute('exec getSevInfo @sevId=?', id).fetchone()
+
+    if request.method == 'POST':
+        if request.form['sevname'] != sevinfo[1]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [severity] SET name = ? WHERE id = ?', request.form['sevname'], sevinfo[0])
+        if request.form['active'] != sevinfo[2]:
+            cursor = sqlconn.cursor()
+            cursor.execute('UPDATE [severity] SET [severity].active = ? WHERE id = ?', request.form['active'], request.form['id'])
+        sqlconn.commit()
+
+        return render_template('admin_edit_ticket_sev.html', allsev=cursor.execute('SELECT id, name FROM [severity]').fetchall())
+
+    return render_template('admin_edit_sev_details.html', sev=sevinfo)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port='80')
