@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [superdesk]    Script Date: 12/3/2020 9:19:53 PM ******/
+/****** CREATE BASELINE DATABASE ******/
 CREATE DATABASE [superdesk]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -77,9 +77,11 @@ EXEC sys.sp_db_vardecimal_storage_format N'superdesk', N'ON'
 GO
 ALTER DATABASE [superdesk] SET QUERY_STORE = OFF
 GO
+/****** END CREATE BASELINE DATABASE ******/
+
+/****** CREATE SUPERDESK USER AND ASSIGN REQUIRED ROLES ******/
 USE [superdesk]
 GO
-/****** Object:  User [superdesk]    Script Date: 12/3/2020 9:19:53 PM ******/
 CREATE USER [superdesk] FOR LOGIN [superdesk] WITH DEFAULT_SCHEMA=[dbo]
 GO
 ALTER ROLE [db_accessadmin] ADD MEMBER [superdesk]
@@ -92,7 +94,9 @@ ALTER ROLE [db_datawriter] ADD MEMBER [superdesk]
 GO
 GRANT EXECUTE TO [superdesk]
 GO
-/****** Object:  Table [dbo].[permission]    Script Date: 12/3/2020 9:19:53 PM ******/
+/****** END CREATE SUPERDESK USER AND ASSIGN REQUIRED ROLES ******/
+
+/****** CREATE TABLES ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -100,13 +104,14 @@ GO
 CREATE TABLE [dbo].[permission](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](50) NOT NULL,
+	[active] [bit] NULL,
  CONSTRAINT [PK_permission] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[severity]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -114,13 +119,14 @@ GO
 CREATE TABLE [dbo].[severity](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](50) NOT NULL,
+	[active] [bit] NULL,
  CONSTRAINT [PK_severity] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[status]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -128,13 +134,14 @@ GO
 CREATE TABLE [dbo].[status](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [nvarchar](50) NOT NULL,
+	[active] [bit] NULL,
  CONSTRAINT [PK_status] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[tickets]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -156,7 +163,7 @@ CREATE TABLE [dbo].[tickets](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[type]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -164,13 +171,14 @@ GO
 CREATE TABLE [dbo].[type](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](50) NOT NULL,
+	[active] [bit] NULL,
  CONSTRAINT [PK_type] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[user]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -184,6 +192,7 @@ CREATE TABLE [dbo].[user](
 	[lastname] [varchar](50) NULL,
 	[phone] [varchar](50) NULL,
 	[permissions] [int] NOT NULL,
+	[active] [bit] NULL,
  CONSTRAINT [PK_user] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
@@ -220,7 +229,9 @@ REFERENCES [dbo].[permission] ([id])
 GO
 ALTER TABLE [dbo].[user] CHECK CONSTRAINT [FK_user_permission]
 GO
-/****** Object:  StoredProcedure [dbo].[createNewTicket]    Script Date: 12/3/2020 9:19:53 PM ******/
+/****** END CREATE TABLES ******/
+
+/****** CREATE STORED PROCEDURES ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -240,7 +251,23 @@ BEGIN
 	VALUES (@title, (SELECT  GETDATE()), (SELECT id FROM [user] WHERE username = @userName), 1, @description, (SELECT id FROM [severity] WHERE name = @severityName), (SELECT id FROM [type] WHERE name = @typeName))
 END
 GO
-/****** Object:  StoredProcedure [dbo].[getAllTickets]    Script Date: 12/3/2020 9:19:53 PM ******/
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[createNewTicketType]
+	@typename varchar(50)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	INSERT INTO [type] (name)
+	VALUES (@typename)
+END
+GO
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -261,7 +288,7 @@ BEGIN
 		LEFT JOIN [type] AS type ON [tickets].type = [type].id
 END
 GO
-/****** Object:  StoredProcedure [dbo].[getMyOpenTickets]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -283,7 +310,7 @@ BEGIN
 		WHERE createdby = @userId
 END
 GO
-/****** Object:  StoredProcedure [dbo].[getTicketInfo]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -305,7 +332,26 @@ BEGIN
 		WHERE [tickets].id = @ticketId
 END
 GO
-/****** Object:  StoredProcedure [dbo].[updateTicketBy]    Script Date: 12/3/2020 9:19:53 PM ******/
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE [dbo].[getUserInfo] @userId int
+
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT [user].id, [user].username, [user].email, [user].firstname, [user].lastname, [user].phone, permission.name
+		FROM [user]
+		LEFT JOIN [permission] AS permission ON [user].permissions = [permission].id
+		WHERE [user].id = @userId
+END
+GO
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -329,7 +375,7 @@ BEGIN
 	WHERE [tickets].id = @ticketId
 END
 GO
-/****** Object:  StoredProcedure [dbo].[updateTicketSeverity]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -350,7 +396,7 @@ BEGIN
 	WHERE [tickets].id = @ticketId
 END
 GO
-/****** Object:  StoredProcedure [dbo].[updateTicketStatus]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -370,7 +416,7 @@ BEGIN
 	WHERE [tickets].id = @ticketId
 END
 GO
-/****** Object:  StoredProcedure [dbo].[updateTicketType]    Script Date: 12/3/2020 9:19:53 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -390,7 +436,9 @@ BEGIN
 	WHERE [tickets].id = @ticketId
 END
 GO
+/****** END CREATE STORED PROCEDURES ******/
 
+/****** INSERT DEFAULT VALUES ******/
 INSERT INTO [permission] (name)
 VALUES ('Admin'), ('Helpdesk'), ('Customer')
 GO
@@ -410,8 +458,11 @@ GO
 INSERT INTO [user] (username, password, firstname, lastname, email, permissions)
 VALUES ('admin', 'gAAAAABfyaAiCsft450tsxq-lXW15Gz1D9UaZLWkiYycZlzC6sjw3HLCJnJyvHraGrf4sfMlNWk9yFyIZRG_EjSnP0XnF_Sl9A==', 'Super', 'Admin', 'admin@superdesk.com', 1)
 GO
+/****** END INSERT DEFAULT VALUES ******/
 
+/****** SET DATABASE TO READWRITE MODE ******/
 USE [master]
 GO
 ALTER DATABASE [superdesk] SET  READ_WRITE 
 GO
+/****** END SET DATABASE TO READWRITE MODE ******/
