@@ -171,7 +171,7 @@ def ticketdetails(id):
             if request.form['status'] != ticketinfo[6]:
                 change = True
                 cursor.execute('exec updateTicketStatus @ticketId = ?, @statusName = ?', request.form['id'], request.form['status'])
-            if request.form['addcomment'] != None:
+            if request.form['addcomment'] != "":
                 change = True
                 now = datetime.now()
                 addcomment = now.strftime("%d/%m/%Y %H:%M:%S") + " - " + session['username'] + "\n" + request.form['addcomment'] + "\n \n" + request.form['description']
