@@ -31,8 +31,10 @@
             <option value="{{ option[0] }}" {% if option[0] == ticket[6] %} selected {% endif %}>{{ option[0] }}</option>
             {% endfor %}
         </select><br>
-        <label for="description">Description</label>
-        <textarea name="description" class="form-control" rows="10" cols="55">{{ ticket[7] }}</textarea><br>
+        <label for="description">Comments</label>
+        <textarea name="description" class="form-control" rows="10" cols="55" readonly>{{ ticket[7] }}</textarea><br>
+        <label for="addcomment">Add Comment</label>
+        <textarea name="addcomment" class="form-control" rows="5" cols="55"></textarea><br>
         <input type="submit" class="btn btn-primary mb-2" name="submit" value="Update">
         </div>
     </form>
