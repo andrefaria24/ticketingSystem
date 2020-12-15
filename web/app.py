@@ -212,7 +212,7 @@ def admin_new_user():
 def admin_edit_users():
     if session['admin'] == True:
         cursor = sqlconn.cursor()
-        getusernames = cursor.execute('SELECT id, username FROM [user]').fetchall()
+        getusernames = cursor.execute('SELECT id, username, firstname, lastname, email FROM [user]').fetchall()
     else:
         return render_template('error.html')
 
