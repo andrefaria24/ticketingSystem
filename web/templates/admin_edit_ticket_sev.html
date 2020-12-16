@@ -6,14 +6,20 @@
         </ul>
     </div>
     
-    <table class="table">
+    <table id="sevtable" class="table">
+        <thead>
             <tr>
                 <th>Name</th>
+                <th>Active</th>
             </tr>
-        {% for sev in allsev %}
-            <tr>
-                <td><a href="{{ url_for('admin_edit_sev_details', id=sev[0])}}">{{ sev[1] }}</a></td>
-            </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for sev in allsev %}
+                <tr>
+                    <td><a href="{{ url_for('admin_edit_sev_details', id=sev[0])}}">{{ sev[1] }}</a></td>
+                    <td>{{ sev[2] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {%endblock%}

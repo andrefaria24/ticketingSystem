@@ -6,14 +6,20 @@
         </ul>
     </div>
     
-    <table class="table">
+    <table id="statustable" class="table">
+        <thead>
             <tr>
                 <th>Name</th>
+                <th>Active</th>
             </tr>
-        {% for status in allstatus %}
-            <tr>
-                <td><a href="{{ url_for('admin_edit_status_details', id=status[0])}}">{{ status[1] }}</a></td>
-            </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for status in allstatus %}
+                <tr>
+                    <td><a href="{{ url_for('admin_edit_status_details', id=status[0])}}">{{ status[1] }}</a></td>
+                    <td>{{ status[2] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {%endblock%}

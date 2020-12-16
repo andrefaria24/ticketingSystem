@@ -6,14 +6,20 @@
         </ul>
     </div>
     
-    <table class="table">
+    <table id="typestable" class="table">
+        <thead>
             <tr>
                 <th>Name</th>
+                <th>Active</th>
             </tr>
-        {% for type in alltypes %}
-            <tr>
-                <td><a href={{ url_for('admin_edit_types_details', id=type[0])}}>{{ type[1] }}</a></td>
-            </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for type in alltypes %}
+                <tr>
+                    <td><a href={{ url_for('admin_edit_types_details', id=type[0])}}>{{ type[1] }}</a></td>
+                    <td>{{ type[2] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {%endblock%}

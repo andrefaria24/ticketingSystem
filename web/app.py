@@ -212,7 +212,7 @@ def admin_new_user():
 def admin_edit_users():
     if session['admin'] == True:
         cursor = sqlconn.cursor()
-        getusernames = cursor.execute('SELECT id, username, firstname, lastname, email FROM [user]').fetchall()
+        getusernames = cursor.execute('SELECT id, username, firstname, lastname, email, active FROM [user]').fetchall()
     else:
         return render_template('error.html')
 
@@ -269,7 +269,7 @@ def admin_new_ticket_types():
 def admin_edit_ticket_types():
     if session['admin'] == True:
         cursor = sqlconn.cursor()
-        gettickettypes = cursor.execute('SELECT id, name FROM [type]').fetchall()
+        gettickettypes = cursor.execute('SELECT id, name, active FROM [type]').fetchall()
     else:
         return render_template('error.html')
 
@@ -313,7 +313,7 @@ def admin_new_ticket_sev():
 def admin_edit_ticket_sev():
     if session['admin'] == True:
         cursor = sqlconn.cursor()
-        getticketsev = cursor.execute('SELECT id, name FROM [severity]').fetchall()
+        getticketsev = cursor.execute('SELECT id, name, active FROM [severity]').fetchall()
     else:
         return render_template('error.html')
 
@@ -357,7 +357,7 @@ def admin_new_ticket_status():
 def admin_edit_ticket_status():
     if session['admin'] == True:
         cursor = sqlconn.cursor()
-        getticketstatus = cursor.execute('SELECT id, name FROM [status]').fetchall()
+        getticketstatus = cursor.execute('SELECT id, name, active FROM [status]').fetchall()
     else:
         return render_template('error.html')
 

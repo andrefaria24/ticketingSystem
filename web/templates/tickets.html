@@ -4,99 +4,112 @@
         {% if session['permissions'] == 1 or session['permissions'] == 2 or session['permissions'] == 4 %}
         <p>
         <h4>All Open Tickets</h4>
-        <table class="table">
-            <tr>
-                <th>Ticket Number</th>
-                <th>Title</th>
-                <th>Created On</th>
-                <th>Last Updated</th>
-                <th>Created By</th>
-                <th>Last Updated By</th>
-                <th>Status</th>
-                <th>Severity</th>
-                <th>Type</th>
-            </tr>
-            {% for ticket in alltickets %}
-                {% if ticket[6] != 'Closed' %}
+        <table id="ticketsallopentable" class="table">
+            <thead>
                 <tr>
-                    <td>{{ ticket[0] }}</td>
-                    <td>{{ ticket[1] }}</td>
-                    <td>{{ ticket[2] }}</td>
-                    <td>{{ ticket[3] }}</td>
-                    <td>{{ ticket[4] }}</td>
-                    <td>{{ ticket[5] }}</td>
-                    <td>{{ ticket[6] }}</td>
-                    <td>{{ ticket[8] }}</td>
-                    <td>{{ ticket[9] }}</td>
-                    <td><a href={{ url_for('ticketdetails', id=ticket[0])}}>Edit</a></td>
+                    <th>Ticket Number</th>
+                    <th>Title</th>
+                    <th>Created On</th>
+                    <th>Last Updated</th>
+                    <th>Created By</th>
+                    <th>Last Updated By</th>
+                    <th>Status</th>
+                    <th>Severity</th>
+                    <th>Type</th>
                 </tr>
-                {% endif %}
-            {% endfor %}
+            </thead>
+            <tbody>
+                {% for ticket in alltickets %}
+                    {% if ticket[6] != 'Closed' %}
+                    <tr>
+                        <td>{{ ticket[0] }}</td>
+                        <td>{{ ticket[1] }}</td>
+                        <td>{{ ticket[2] }}</td>
+                        <td>{{ ticket[3] }}</td>
+                        <td>{{ ticket[4] }}</td>
+                        <td>{{ ticket[5] }}</td>
+                        <td>{{ ticket[6] }}</td>
+                        <td>{{ ticket[8] }}</td>
+                        <td>{{ ticket[9] }}</td>
+                        <td><a href={{ url_for('ticketdetails', id=ticket[0])}}>Edit</a></td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
         </table>
         </p>
 
         <p>
         <h4>All Closed Tickets</h4>
-        <table class="table">
-            <tr>
-                <th>Ticket Number</th>
-                <th>Title</th>
-                <th>Created On</th>
-                <th>Last Updated</th>
-                <th>Created By</th>
-                <th>Last Updated By</th>
-                <th>Status</th>
-                <th>Severity</th>
-                <th>Type</th>
-            </tr>
-            {% for ticket in alltickets %}
-                {% if ticket[6] == 'Closed' %}
+        <table id="ticketsallclosedtable" class="table">
+            <thead>
                 <tr>
-                    <td>{{ ticket[0] }}</td>
-                    <td>{{ ticket[1] }}</td>
-                    <td>{{ ticket[2] }}</td>
-                    <td>{{ ticket[3] }}</td>
-                    <td>{{ ticket[4] }}</td>
-                    <td>{{ ticket[5] }}</td>
-                    <td>{{ ticket[6] }}</td>
-                    <td>{{ ticket[8] }}</td>
-                    <td>{{ ticket[9] }}</td>
-                    <td><a href={{ url_for('ticketdetails', id=ticket[0])}}>Edit</a></td>
+                    <th>Ticket Number</th>
+                    <th>Title</th>
+                    <th>Created On</th>
+                    <th>Last Updated</th>
+                    <th>Created By</th>
+                    <th>Last Updated By</th>
+                    <th>Status</th>
+                    <th>Severity</th>
+                    <th>Type</th>
                 </tr>
-                {% endif %}
-            {% endfor %}
+            </thead>
+            <tbody>
+                {% for ticket in alltickets %}
+                    {% if ticket[6] == 'Closed' %}
+                    <tr>
+                        <td>{{ ticket[0] }}</td>
+                        <td>{{ ticket[1] }}</td>
+                        <td>{{ ticket[2] }}</td>
+                        <td>{{ ticket[3] }}</td>
+                        <td>{{ ticket[4] }}</td>
+                        <td>{{ ticket[5] }}</td>
+                        <td>{{ ticket[6] }}</td>
+                        <td>{{ ticket[8] }}</td>
+                        <td>{{ ticket[9] }}</td>
+                        <td><a href={{ url_for('ticketdetails', id=ticket[0])}}>Edit</a></td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
         </table>
         </p>
         {% endif %}
 
         <p>
         <h4>My Open Tickets</h4>
-        <table class="table">
-            <tr>
-                <th>Ticket Number</th>
-                <th>Title</th>
-                <th>Created On</th>
-                <th>Last Updated</th>
-                <th>Created By</th>
-                <th>Last Updated By</th>
-                <th>Status</th>
-                <th>Severity</th>
-                <th>Type</th>
-            </tr>
-            {% for ticket in mytickets %}
-            <tr>
-                <td>{{ ticket[0] }}</td>
-                <td>{{ ticket[1] }}</td>
-                <td>{{ ticket[2] }}</td>
-                <td>{{ ticket[3] }}</td>
-                <td>{{ ticket[4] }}</td>
-                <td>{{ ticket[5] }}</td>
-                <td>{{ ticket[6] }}</td>
-                <td>{{ ticket[8] }}</td>
-                <td>{{ ticket[9] }}</td>
-                <td><a href={{ url_for('ticketdetails', id=ticket[0])}}>Edit</a></td>
-            </tr>
-            {% endfor %}
+        <table id="ticketsmyopentable" class="table">
+            <thead>
+                <tr>
+                    <th>Ticket Number</th>
+                    <th>Title</th>
+                    <th>Created On</th>
+                    <th>Last Updated</th>
+                    <th>Created By</th>
+                    <th>Last Updated By</th>
+                    <th>Status</th>
+                    <th>Severity</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in mytickets %}
+                <tr>
+                    <td>{{ ticket[0] }}</td>
+                    <td>{{ ticket[1] }}</td>
+                    <td>{{ ticket[2] }}</td>
+                    <td>{{ ticket[3] }}</td>
+                    <td>{{ ticket[4] }}</td>
+                    <td>{{ ticket[5] }}</td>
+                    <td>{{ ticket[6] }}</td>
+                    <td>{{ ticket[8] }}</td>
+                    <td>{{ ticket[9] }}</td>
+                    <td><a href={{ url_for('ticketdetails', id=ticket[0])}}>Edit</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         </p>
     </div>
 {%endblock%}
