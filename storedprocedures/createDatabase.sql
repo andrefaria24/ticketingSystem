@@ -299,7 +299,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT [tickets].id, [tickets].title, [tickets].created, [tickets].updated, createdby.username, updatedby.username, status.name, [tickets].description, severity.name, type.name
+	SELECT [tickets].id, [tickets].title, FORMAT([tickets].created, 'dd/MM/yyyy HH:mm:ss') AS created, FORMAT([tickets].updated, 'dd/MM/yyyy HH:mm:ss') AS updated, createdby.username AS createdby, updatedby.username AS updatedby, status.name AS status, [tickets].description, severity.name AS severity, type.name AS type
 		FROM [tickets]
 		LEFT JOIN [user] AS createdby ON [tickets].createdby = createdby.id
 		LEFT JOIN [user] AS updatedby ON [tickets].updatedby = updatedby.id
